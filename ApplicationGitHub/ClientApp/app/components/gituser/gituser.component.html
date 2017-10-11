@@ -1,0 +1,25 @@
+﻿<h1>Git Users</h1>
+
+
+<p *ngIf="!gitUsers"><em>Loading...</em></p>
+
+<table class='table' *ngIf="gitUsers">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Login</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of gitUsers">
+            <td>{{ user.id }}</td>
+            <td>{{ user.login }}</td>
+            <td>
+                <a [routerLink]="['/git-user-detail',user.login]">
+                    <span class='glyphicon glyphicon-search'></span>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,151 @@
+﻿<table style="width:80%;margin-left: 100px">
+    <tr>
+        <td>
+            <h2>Entrevistas</h2>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a class="btn btn-sm  btn-primary" (click)="showDialogToAdd()" title="Cadastrar">
+                <span class='glyphicon glyphicon-plus'></span>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <br />
+            <div class="ContentSideSections Implementation">
+                <p-dataTable [value]="rowData" [rows]="10" [paginator]="true"
+                             [pageLinks]="3" [rowsPerPageOptions]="[5,10,20]">
+                    <header>Listagem de Entrevistas</header>
+                    <p-column field="entrevistaId" [style]="{'width':'50px'}"
+                              header="ID" [sortable]="true"></p-column>
+                    <p-column field="vagaDescricao"
+                              header="Vaga Descrição" [sortable]="true"></p-column>
+                    <p-column field="candidatoNome"
+                              header="Nome Candidato" [sortable]="true"></p-column>
+
+
+                    <p-column header="Ações" [style]="{'width':'100px'}">
+                        <ng-template let-col let-entrevista="rowData"
+                                     pTemplate type="body">
+                            <a class="btn btn-sm  btn-default" (click)="showDialogToDetail(entrevista)">
+                                <span class='glyphicon glyphicon-search'></span>
+                            </a>
+                        </ng-template>
+                    </p-column>
+                    <footer>
+                        <div class="ui-helper-clearfix"
+                             style="width:100%"></div>
+                    </footer>
+                </p-dataTable>
+
+                <p-dialog header="{{labelCadastrarEditar}}" [(visible)]="displayDialog"
+                          [responsive]="true"
+                          showEffect="fade" [modal]="true">
+
+                    <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad modal-lg">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label for="descricao">Candidato:</label>
+                            </div>
+                            <div class="ui-grid-col-8">
+                                <select class="form-control" id="candidato"
+                                        required
+                                        [(ngModel)]="candidatoAtualId" name="Candidatos">
+                                    <option value="0">Selecione</option>
+                                    <option *ngFor="let candidato of candidatos" [value]="candidato.candidatoId">{{candidato.nome}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label for="descricao">Vaga:</label>
+                            </div>
+                            <div class="ui-grid-col-8">
+                                <select class="form-control" id="vaga"
+                                        required
+                                        [(ngModel)]="vagaAtualId" name="Vagas"
+                                        (change)="buscaTecnologias()">
+                                    <option value="0">Selecione</option>
+                                    <option *ngFor="let vaga of vagas" [value]="vaga.vagaId">{{vaga.descricao}}</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row" *ngIf="vagaAtualId">
+                            <div class="ui-grid-col-4">
+                                <label for="tecnlogias">Tecnologias:</label>
+                            </div>
+                            <div class="ui-grid-col-8">
+                                <div class="ui-g-12" *ngFor="let tecnologia of tecnologias">
+                                    <input type="checkbox" name="{{tecnologia.tecnologiaNome}}" (change)="selecionaTecnologia(tecnologia.vagaTecnologiaId)" value="{{tecnologia.vagaTecnologiaId}}" id="{{tecnologia.tecnologiaNome}}" />{{tecnologia.tecnologiaNome}}
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <footer>
+                        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix text-center">
+                            <button type="button" pButton icon="glyphicon glyphicon-arrow-left"
+                                    (click)="voltar()"
+                                    label="Voltar"></button>
+                            <button type="button" pButton icon="glyphicon glyphicon-ok"
+                                    (click)="salvar()" *ngIf="novaEntrevista"
+                                    label="Cadastrar"></button>
+                        </div>
+                    </footer>
+                </p-dialog>
+
+
+                <p-dialog header="Visualizar Entrevista" [(visible)]="displayDialogDetail"
+                          [responsive]="true"
+                          
+                          showEffect="fade" [modal]="true">
+
+                    <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad modal-lg">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label for="descricao">Candidato:</label>
+                            </div>
+                            <div class="ui-grid-col-8">
+                                {{entrevista.candidatoNome}}
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label for="descricao">Vaga:</label>
+                            </div>
+                            <div class="ui-grid-col-8">
+                                {{entrevista.vagaDescricao}}
+                            </div>
+                        </div>
+
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-4">
+                                <label for="tecnlogias">Tecnologias conhecidas:</label>
+                            </div>
+                            <div class="ui-grid-col-8">
+                                <div class="ui-g-12" *ngFor="let tecnologia of entrevista.listaEntrevistaTecnologia">
+                                    <input type="checkbox" name="{{tecnologia.tecnologiaNome}}" value="{{tecnologia.vagaTecnologiaId}}" id="{{tecnologia.tecnologiaNome}}" checked disabled="disabled" />{{tecnologia.tecnologiaNome}}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer>
+                        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix text-center">
+                            <button type="button" pButton icon="glyphicon glyphicon-arrow-left"
+                                    (click)="voltar()"
+                                    label="Voltar"></button>
+                        </div>
+                    </footer>
+                </p-dialog>
+            </div>
+        </td>
+    </tr>
+</table>
